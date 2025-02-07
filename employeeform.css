@@ -1,0 +1,42 @@
+/* General styles for form */
+.employee-entry {
+    padding: 7px;
+    
+    margin-bottom: 5px;
+    
+    background-color: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+.form-label {
+    display: inline-block;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 7px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+hr {
+    border: 1px solid #ccc;
+    margin: 5px 0;
+}
+
+h4 {
+    font-size: 1.2em;
+    color: #333;
+}

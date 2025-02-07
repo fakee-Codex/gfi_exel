@@ -1,0 +1,70 @@
+/* Custom Tailwind style for table and button */
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f3f4f6;
+  font-weight: bold;
+}
+
+td input {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 0.375rem;
+  text-align: center;
+}
+
+td input:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.save-btn {
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+.editable-cell {
+  text-align: center;
+  width: 80px;
+}
+
+/* Styling for error input fields */
+.error-input {
+  border-color: #ff0000;
+}
+
+.content {
+  padding: 2rem;
+  background-color: #f9fafb;
+}
+
+h1 {
+  font-size: 1.75rem;
+  color: #333;
+}

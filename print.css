@@ -1,0 +1,53 @@
+
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        .payslip {
+            width: 30%;
+            margin-bottom: 2%;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            /* Reduced font size */
+        }
+
+        .payslip .header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            /* Slightly larger for headers */
+        }
+
+        .payslip table {
+            width: 100%;
+            margin-top: 5px;
+            border-spacing: 0;
+        }
+
+        .payslip td {
+            padding: 2px;
+        }
+
+        .payslip .footer {
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+        }
+
+        /* To manage layout properly in two rows and three columns */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .container .payslip {
+            width: 30%;
+            /* Ensuring 3 payslips fit per row */
+            margin-bottom: 2%;
+        }
+  

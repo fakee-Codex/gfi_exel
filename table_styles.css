@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  background-color: #2b2d42; /* Calm dark background */
+}
+
+.content {
+  margin: 20px auto;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    #56405f,
+    #39879e
+  ); /* Gradient from purple to green */
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  max-width: 90%;
+}
+
+h1 {
+  text-align: center;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Ensures no double borders */
+  margin-top: 20px;
+  background-color: #3a3d5c; /* Table background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Soft shadow for table */
+  border-radius: 10px; /* Smooth rounded corners */
+  overflow: hidden; /* Prevent content from overflowing the corners */
+}
+
+th,
+td {
+  border: none; /* Remove cell borders */
+  padding: 14px 10px; /* Add spacing inside cells */
+  text-align: center;
+  white-space: nowrap;
+  background-color: transparent; /* Keep cells seamless */
+}
+
+th {
+  background-color: #50577a; /* Slightly darker background for headers */
+  font-weight: bold;
+  color: #edf2f4;
+}
+
+tr:nth-child(even) td {
+  background-color: #44476b; /* Alternate row color for clarity */
+}
+
+tr:hover td {
+  background-color: #5c5f85; /* Highlight row on hover */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #4e8bd0; /* Softer blue for default state */
+  color: #edf2f4;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease; /* Smooth transition for hover */
+  margin: 5px;
+}
+
+button:hover {
+  background-color: #5aa9e6; /* Brighter blue on hover */
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 4px 8px rgba(90, 169, 230, 0.3); /* Subtle hover shadow */
+}
+
+button:active {
+  transform: scale(1); /* Remove zoom on click */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Smaller shadow on click */
+}
+
+@media (max-width: 720px) {
+  th,
+  td {
+    font-size: 12px;
+  }
+}
