@@ -23,31 +23,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_POST['add'])) {
 
-        // Loop through each employee entry
-        for ($i = 0; $i < count($_POST['first_name']); $i++) {
-            $first_name = $conn->real_escape_string($_POST['first_name'][$i]);
-            $last_name = $conn->real_escape_string($_POST['last_name'][$i]);
-            $employee_type = $conn->real_escape_string($_POST['employee_type'][$i]);
-            $classification = $conn->real_escape_string($_POST['classification'][$i]);
-            $basic_salary = $conn->real_escape_string($_POST['basic_salary'][$i]);
-            $honorarium = $conn->real_escape_string($_POST['honorarium'][$i]);
+        if (isset($_POST['add'])) {
 
+            // Loop through each employee entry
+            for ($i = 0; $i < count($_POST['first_name']); $i++) {
+                $first_name = $conn->real_escape_string($_POST['first_name'][$i]);
+                $last_name = $conn->real_escape_string($_POST['last_name'][$i]);
+                $employee_type = $conn->real_escape_string($_POST['employee_type'][$i]);
+                $classification = $conn->real_escape_string($_POST['classification'][$i]);
+                $basic_salary = $conn->real_escape_string($_POST['basic_salary'][$i]);
+                $honorarium = $conn->real_escape_string($_POST['honorarium'][$i]);
+                $overload_rate = $conn->real_escape_string($_POST['overload_rate'][$i]);
+                $watch_reward = $conn->real_escape_string($_POST['watch_reward'][$i]);
+                $absent_lateRate = $conn->real_escape_string($_POST['absent_lateRate'][$i]);
 
+                // Prepare the SQL statement for INSERT
+                $stmt = $conn->prepare("INSERT INTO employees (first_name, last_name, employee_type, classification, basic_salary, honorarium, overload_rate, watch_reward, absent_lateRate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssddddd", $first_name, $last_name, $employee_type, $classification, $basic_salary, $honorarium, $overload_rate, $watch_reward, $absent_lateRate);
+                $stmt->execute();
+            }
 
-            $overload_rate = $conn->real_escape_string($_POST['overload_rate'][$i]);
-            $watch_reward = $conn->real_escape_string($_POST['watch_reward'][$i]);
-
-
-            $absent_lateRate = $conn->real_escape_string($_POST['absent_lateRate'][$i]);
-
-            // Prepare the SQL statement
-            $stmt = $conn->prepare("UPDATE employees SET first_name = ?, last_name = ?, employee_type = ?, classification = ?, basic_salary = ?, honorarium = ?, overload_rate = ?, watch_reward = ?, absent_lateRate = ? WHERE employee_id = ?");
-            $stmt->bind_param("ssssddddii", $first_name, $last_name, $employee_type, $classification, $basic_salary, $honorarium, $overload_rate, $watch_reward, $absent_lateRate, $employee_id);
-            $stmt->execute();
-
-
-
-            $stmt->execute();
+            // Redirect to avoid resubmission
+            header("Location: " . $_SERVER['PHP_SELF'] . "?success=true");
+            exit();
         }
     } else if (isset($_POST['update'])) {
         // Update employee data
@@ -176,6 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div id="addEmployeeForm" style="display: none;">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Employee</h2>
                 <button class="bg-gray-500 text-white py-2 px-4 rounded-md shadow hover:bg-gray-600 mb-4" onclick="toggleView('employeeList')">Back to Employee List</button>
+
                 <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" class="space-y-6">
                     <div class="form-group">
                         <label for="first_name" class="form-label text-sm font-medium text-white">First Name</label>
@@ -198,50 +197,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="form-group">
                         <label for="basic_salary" class="form-label text-sm font-medium text-white">Basic Salary</label>
-                        <!-- <input type="number" id="basicSalary" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required"> -->
-
-
-
-                        <input type="number" id="basic_salary" name="basic_salary[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required oninput="calculateRate()">
+                        <input type="number" name="basic_salary[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required oninput="calculateRate(this)">
                     </div>
                     <div class="form-group">
                         <label for="honorarium" class="form-label text-sm font-medium text-white">Honorarium</label>
                         <input type="number" name="honorarium[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
-
-
                     <div class="form-group">
-                        <label for="basic_salary" class="form-label text-sm font-medium text-white">Overload Rate</label>
+                        <label for="overload_rate" class="form-label text-sm font-medium text-white">Overload Rate</label>
                         <input type="number" name="overload_rate[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
-
-
                     <div class="form-group">
-                        <label for="basic_salary" class="form-label text-sm font-medium text-white">Watch Reward</label>
+                        <label for="watch_reward" class="form-label text-sm font-medium text-white">Watch Reward</label>
                         <input type="number" name="watch_reward[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
-
-
                     <div class="form-group">
-
-                        <label for="absentLateRate" class="form-label text-sm font-medium text-white mt-2">Absent/late Rate</label>
-                        <input type="number" id="absentLateRate" name="absent_lateRate[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" readonly>
-
+                        <label for="absentLateRate" class="form-label text-sm font-medium text-white mt-2">Absent/Late Rate</label>
+                        <input type="number" name="absent_lateRate[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" readonly>
                     </div>
-
-                    <script>
-                        function calculateRate() {
-                            let basicSalary = parseFloat(document.getElementById('basic_salary').value);
-                            if (!isNaN(basicSalary) && basicSalary > 0) {
-                                let absentLateRate = (basicSalary / 13) / 8;
-                                document.getElementById('absentLateRate').value = absentLateRate.toFixed(2);
-                                document.getElementById('resultText').innerText = "Absent/Late Rate: " + absentLateRate.toFixed(2);
-                            } else {
-                                document.getElementById('absentLateRate').value = "";
-                                document.getElementById('resultText').innerText = "";
-                            }
-                        }
-                    </script>
 
                     <button type="submit" name="add" class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 w-full">Add Employee</button>
                 </form>
@@ -309,13 +282,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <script>
-                function calculateRate() {
-                    let basicSalary = parseFloat(document.getElementById('edit_basic_salary').value);
+                function calculateRate(inputElement) {
+                    let basicSalary = parseFloat(inputElement.value);
+
+                    // Find the closest parent form-group to locate the corresponding Absent/Late Rate field
+                    let formGroup = inputElement.closest('.form-group');
+                    let absentLateRateField = formGroup.parentNode.querySelector('input[name="absent_lateRate[]"], input[id="edit_absent_lateRate"]');
+
                     if (!isNaN(basicSalary) && basicSalary > 0) {
                         let absentLateRate = (basicSalary / 13) / 8;
-                        document.getElementById('edit_absent_lateRate').value = absentLateRate.toFixed(2); // Automatically fill the Absent/Late Rate
+                        absentLateRateField.value = absentLateRate.toFixed(2);
                     } else {
-                        document.getElementById('edit_absent_lateRate').value = ""; // Clear if Basic Salary is invalid
+                        absentLateRateField.value = "";
                     }
                 }
             </script>

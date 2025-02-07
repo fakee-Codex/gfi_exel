@@ -1,70 +1,77 @@
 <?php
-// Database connection
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "gfi_exel"; // Change this to your actual database name
+include('database_connection.php'); // Assuming you have a database connection setup
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "error" => "Database connection failed."]));
+
+// Execute the query to fetch overload data
+$query = "SELECT * FROM overload";  // Customize the query if needed
+$result = mysqli_query($conn, $query);  // Execute the query
+
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));  // Handle query failure
 }
 
-// Check if the request method is POST
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    die(json_encode(["success" => false, "error" => "Invalid request method."]));
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Loop through each employee's overload data
+    foreach ($_POST['overload_id'] as $index => $overload_id) {
+        // Extract the form data
+        $employee_id = $_POST['employee_id'][$index];
+        $wednesday_days = $_POST['wednesday_days'][$index];
+        $wednesday_hrs = $_POST['wednesday_hrs'][$index];
+        $wednesday_total = $_POST['wednesday_total'][$index];
 
-// Check if overload_id exists
-if (!isset($_POST['overload_id']) || empty($_POST['overload_id'])) {
-    die(json_encode(["success" => false, "error" => "Invalid Row ID."]));
-}
+        $thursday_days = $_POST['thursday_days'][$index];
+        $thursday_hrs = $_POST['thursday_hrs'][$index];
+        $thursday_total = $_POST['thursday_total'][$index];
 
-// Prepare and execute the SQL update query
-foreach ($_POST['overload_id'] as $index => $id) {
-    // Validate the ID
-    if (!is_numeric($id) || $id <= 0) {
-        die(json_encode(["success" => false, "error" => "Invalid Row ID: " . htmlspecialchars($id)]));
+        $friday_days = $_POST['friday_days'][$index];
+        $friday_hrs = $_POST['friday_hrs'][$index];
+        $friday_total = $_POST['friday_total'][$index];
+
+        $mtth_days = $_POST['mtth_days'][$index];
+        $mtth_hrs = $_POST['mtth_hrs'][$index];
+        $mtth_total = $_POST['mtth_total'][$index];
+
+        $mtwf_days = $_POST['mtwf_days'][$index];
+        $mtwf_hrs = $_POST['mtwf_hrs'][$index];
+        $mtwf_total = $_POST['mtwf_total'][$index];
+
+        $twthf_days = $_POST['twthf_days'][$index];
+        $twthf_hrs = $_POST['twthf_hrs'][$index];
+        $twthf_total = $_POST['twthf_total'][$index];
+
+        $mw_days = $_POST['mw_days'][$index];
+        $mw_hrs = $_POST['mw_hrs'][$index];
+        $mw_total = $_POST['mw_total'][$index];
+
+        $less_lateOL = $_POST['less_lateOL'][$index];
+        $additional = $_POST['additional'][$index];
+        $adjustment_less = $_POST['adjustment_less'][$index];
+
+        // Calculate Grand Total
+        $grand_total = ($wednesday_total + $thursday_total + $friday_total + $mtth_total + $mtwf_total + $twthf_total + $mw_total) - $less_lateOL + $additional - $adjustment_less;
+
+        // Update the database with the new values
+        $query = "UPDATE overload SET 
+                    employee_id = '$employee_id', 
+                    wednesday_days = '$wednesday_days', wednesday_hrs = '$wednesday_hrs', wednesday_total = '$wednesday_total', 
+                    thursday_days = '$thursday_days', thursday_hrs = '$thursday_hrs', thursday_total = '$thursday_total', 
+                    friday_days = '$friday_days', friday_hrs = '$friday_hrs', friday_total = '$friday_total', 
+                    mtth_days = '$mtth_days', mtth_hrs = '$mtth_hrs', mtth_total = '$mtth_total', 
+                    mtwf_days = '$mtwf_days', mtwf_hrs = '$mtwf_hrs', mtwf_total = '$mtwf_total', 
+                    twthf_days = '$twthf_days', twthf_hrs = '$twthf_hrs', twthf_total = '$twthf_total', 
+                    mw_days = '$mw_days', mw_hrs = '$mw_hrs', mw_total = '$mw_total', 
+                    less_lateOL = '$less_lateOL', additional = '$additional', adjustment_less = '$adjustment_less',
+                    grand_total = '$grand_total'
+                    WHERE overload_id = '$overload_id'";
+
+        if ($conn->query($query) === TRUE) {
+            echo "Record updated successfully!";
+        } else {
+            echo "Error updating record: " . $conn->error;
+        }
     }
-
-    // Sanitize input values
-    $wednesday_days = isset($_POST['wednesday_days'][$index]) ? intval($_POST['wednesday_days'][$index]) : 0;
-    $thursday_days = isset($_POST['thursday_days'][$index]) ? intval($_POST['thursday_days'][$index]) : 0;
-    $friday_days = isset($_POST['friday_days'][$index]) ? intval($_POST['friday_days'][$index]) : 0;
-    $mtth_days = isset($_POST['mtth_days'][$index]) ? intval($_POST['mtth_days'][$index]) : 0;
-    $mtwf_days = isset($_POST['mtwf_days'][$index]) ? intval($_POST['mtwf_days'][$index]) : 0;
-    $twthf_days = isset($_POST['twthf_days'][$index]) ? intval($_POST['twthf_days'][$index]) : 0;
-    $mw_days = isset($_POST['mw_days'][$index]) ? intval($_POST['mw_days'][$index]) : 0;
-
-    // Prepare SQL statement
-    $stmt = $conn->prepare("UPDATE overload SET 
-        wednesday_days = ?, 
-        thursday_days = ?, 
-        friday_days = ?, 
-        mtth_days = ?, 
-        mtwf_days = ?, 
-        twthf_days = ?, 
-        mw_days = ?
-        WHERE overload_id = ?");
-    
-    if (!$stmt) {
-        die(json_encode(["success" => false, "error" => "SQL prepare failed: " . $conn->error]));
-    }
-
-    // Bind parameters
-    $stmt->bind_param("iiiiiiii", $wednesday_days, $thursday_days, $friday_days, $mtth_days, $mtwf_days, $twthf_days, $mw_days, $id);
-
-    // Execute query
-    if (!$stmt->execute()) {
-        die(json_encode(["success" => false, "error" => "SQL execution failed: " . $stmt->error]));
-    }
-
-    $stmt->close();
 }
 
-$conn->close();
-
-echo "<script>alert('Days updated successfully!'); window.location.href='manage_overload_update.php';</script>";
 ?>
 
 

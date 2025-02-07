@@ -30,8 +30,6 @@ try {
 
 
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -182,7 +180,8 @@ try {
                         <th>TOTAL</th>
                         <th>DAYS</th>
                         <th>HRS</th>
-                        <th>TOTAL</th>       <th>DAYS</th>
+                        <th>TOTAL</th>       
+                        <th>DAYS</th>
                         <th>HRS</th>
                         <th>TOTAL</th>
                         <th>DAYS</th>
@@ -211,21 +210,7 @@ try {
 <script>
   function updateDayTotal(inputElement, day) {
     // Get the input value for days (wednesday_days)
-    let days = parseFloat(inputElement.value);
-    
-    // Get the value for hours (wednesday_hrs) - assuming it's in the HTML
-    let hours = parseFloat(document.getElementById(day + '_hrs').textContent);
-    
-    // If the days or hours are not valid numbers, set the total to 0
-    if (isNaN(days) || isNaN(hours)) {
-      document.getElementById(day + '_total').textContent = '₱0.00';
-    } else {
-      // Calculate the total (days * hours)
-      let total = days * hours;
-
-      // Update the total field (wednesday_total)
-      document.getElementById(day + '_total').textContent = '₱' + total.toFixed(2);
-    }
+   
   }
 </script>
 
