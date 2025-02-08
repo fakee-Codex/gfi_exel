@@ -1,9 +1,16 @@
 <?php
+
 include('database_connection.php'); // Assuming you have a database connection setup
 
-
 // Execute the query to fetch overload data
-$query = "SELECT * FROM overload";  // Customize the query if needed
+$query = "
+    SELECT 
+        o.overload_id,  -- Ensure overload_id is selected here
+        o.*, 
+        CONCAT(e.first_name, ' ', e.last_name) AS employee_name
+    FROM overload o
+    JOIN employees e ON o.employee_id = e.employee_id
+";  // Customize the query if needed
 $result = mysqli_query($conn, $query);  // Execute the query
 
 if (!$result) {
@@ -11,69 +18,75 @@ if (!$result) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Loop through each employee's overload data
-    foreach ($_POST['overload_id'] as $index => $overload_id) {
-        // Extract the form data
-        $employee_id = $_POST['employee_id'][$index];
-        $wednesday_days = $_POST['wednesday_days'][$index];
-        $wednesday_hrs = $_POST['wednesday_hrs'][$index];
-        $wednesday_total = $_POST['wednesday_total'][$index];
+    if (isset($_POST['overload_id']) && is_array($_POST['overload_id'])) {
+        foreach ($_POST['overload_id'] as $index => $overload_id) {
+            // Use isset to avoid undefined index warnings
+            $employee_id = isset($_POST['employee_id'][$index]) ? $_POST['employee_id'][$index] : '';
+            $wednesday_days = isset($_POST['wednesday_days'][$index]) ? $_POST['wednesday_days'][$index] : 0;
+            $wednesday_hrs = isset($_POST['wednesday_hrs'][$index]) ? $_POST['wednesday_hrs'][$index] : 0;
+            $wednesday_total = isset($_POST['wednesday_total'][$index]) ? $_POST['wednesday_total'][$index] : 0;
 
-        $thursday_days = $_POST['thursday_days'][$index];
-        $thursday_hrs = $_POST['thursday_hrs'][$index];
-        $thursday_total = $_POST['thursday_total'][$index];
+            $thursday_days = isset($_POST['thursday_days'][$index]) ? $_POST['thursday_days'][$index] : 0;
+            $thursday_hrs = isset($_POST['thursday_hrs'][$index]) ? $_POST['thursday_hrs'][$index] : 0;
+            $thursday_total = isset($_POST['thursday_total'][$index]) ? $_POST['thursday_total'][$index] : 0;
 
-        $friday_days = $_POST['friday_days'][$index];
-        $friday_hrs = $_POST['friday_hrs'][$index];
-        $friday_total = $_POST['friday_total'][$index];
+            $friday_days = isset($_POST['friday_days'][$index]) ? $_POST['friday_days'][$index] : 0;
+            $friday_hrs = isset($_POST['friday_hrs'][$index]) ? $_POST['friday_hrs'][$index] : 0;
+            $friday_total = isset($_POST['friday_total'][$index]) ? $_POST['friday_total'][$index] : 0;
 
-        $mtth_days = $_POST['mtth_days'][$index];
-        $mtth_hrs = $_POST['mtth_hrs'][$index];
-        $mtth_total = $_POST['mtth_total'][$index];
+            $mtth_days = isset($_POST['mtth_days'][$index]) ? $_POST['mtth_days'][$index] : 0;
+            $mtth_hrs = isset($_POST['mtth_hrs'][$index]) ? $_POST['mtth_hrs'][$index] : 0;
+            $mtth_total = isset($_POST['mtth_total'][$index]) ? $_POST['mtth_total'][$index] : 0;
 
-        $mtwf_days = $_POST['mtwf_days'][$index];
-        $mtwf_hrs = $_POST['mtwf_hrs'][$index];
-        $mtwf_total = $_POST['mtwf_total'][$index];
+            $mtwf_days = isset($_POST['mtwf_days'][$index]) ? $_POST['mtwf_days'][$index] : 0;
+            $mtwf_hrs = isset($_POST['mtwf_hrs'][$index]) ? $_POST['mtwf_hrs'][$index] : 0;
+            $mtwf_total = isset($_POST['mtwf_total'][$index]) ? $_POST['mtwf_total'][$index] : 0;
 
-        $twthf_days = $_POST['twthf_days'][$index];
-        $twthf_hrs = $_POST['twthf_hrs'][$index];
-        $twthf_total = $_POST['twthf_total'][$index];
+            $twthf_days = isset($_POST['twthf_days'][$index]) ? $_POST['twthf_days'][$index] : 0;
+            $twthf_hrs = isset($_POST['twthf_hrs'][$index]) ? $_POST['twthf_hrs'][$index] : 0;
+            $twthf_total = isset($_POST['twthf_total'][$index]) ? $_POST['twthf_total'][$index] : 0;
 
-        $mw_days = $_POST['mw_days'][$index];
-        $mw_hrs = $_POST['mw_hrs'][$index];
-        $mw_total = $_POST['mw_total'][$index];
+            $mw_days = isset($_POST['mw_days'][$index]) ? $_POST['mw_days'][$index] : 0;
+            $mw_hrs = isset($_POST['mw_hrs'][$index]) ? $_POST['mw_hrs'][$index] : 0;
+            $mw_total = isset($_POST['mw_total'][$index]) ? $_POST['mw_total'][$index] : 0;
 
-        $less_lateOL = $_POST['less_lateOL'][$index];
-        $additional = $_POST['additional'][$index];
-        $adjustment_less = $_POST['adjustment_less'][$index];
+            $less_lateOL = isset($_POST['less_lateOL'][$index]) ? $_POST['less_lateOL'][$index] : 0;
+            $additional = isset($_POST['additional'][$index]) ? $_POST['additional'][$index] : 0;
+            $adjustment_less = isset($_POST['adjustment_less'][$index]) ? $_POST['adjustment_less'][$index] : 0;
 
-        // Calculate Grand Total
-        $grand_total = ($wednesday_total + $thursday_total + $friday_total + $mtth_total + $mtwf_total + $twthf_total + $mw_total) - $less_lateOL + $additional - $adjustment_less;
+            // Calculate Grand Total
+            $grand_total = ($wednesday_total + $thursday_total + $friday_total + $mtth_total + $mtwf_total + $twthf_total + $mw_total) - $less_lateOL + $additional - $adjustment_less;
 
-        // Update the database with the new values
-        $query = "UPDATE overload SET 
-                    employee_id = '$employee_id', 
-                    wednesday_days = '$wednesday_days', wednesday_hrs = '$wednesday_hrs', wednesday_total = '$wednesday_total', 
-                    thursday_days = '$thursday_days', thursday_hrs = '$thursday_hrs', thursday_total = '$thursday_total', 
-                    friday_days = '$friday_days', friday_hrs = '$friday_hrs', friday_total = '$friday_total', 
-                    mtth_days = '$mtth_days', mtth_hrs = '$mtth_hrs', mtth_total = '$mtth_total', 
-                    mtwf_days = '$mtwf_days', mtwf_hrs = '$mtwf_hrs', mtwf_total = '$mtwf_total', 
-                    twthf_days = '$twthf_days', twthf_hrs = '$twthf_hrs', twthf_total = '$twthf_total', 
-                    mw_days = '$mw_days', mw_hrs = '$mw_hrs', mw_total = '$mw_total', 
-                    less_lateOL = '$less_lateOL', additional = '$additional', adjustment_less = '$adjustment_less',
-                    grand_total = '$grand_total'
-                    WHERE overload_id = '$overload_id'";
+            // Update the database with the new values
+            $query = "UPDATE overload SET 
+                        employee_id = '$employee_id', 
+                        wednesday_days = '$wednesday_days', wednesday_hrs = '$wednesday_hrs', wednesday_total = '$wednesday_total', 
+                        thursday_days = '$thursday_days', thursday_hrs = '$thursday_hrs', thursday_total = '$thursday_total', 
+                        friday_days = '$friday_days', friday_hrs = '$friday_hrs', friday_total = '$friday_total', 
+                        mtth_days = '$mtth_days', mtth_hrs = '$mtth_hrs', mtth_total = '$mtth_total', 
+                        mtwf_days = '$mtwf_days', mtwf_hrs = '$mtwf_hrs', mtwf_total = '$mtwf_total', 
+                        twthf_days = '$twthf_days', twthf_hrs = '$twthf_hrs', twthf_total = '$twthf_total', 
+                        mw_days = '$mw_days', mw_hrs = '$mw_hrs', mw_total = '$mw_total', 
+                        less_lateOL = '$less_lateOL', additional = '$additional', adjustment_less = '$adjustment_less',
+                        grand_total = '$grand_total'
+                        WHERE overload_id = '$overload_id'";
 
-        if ($conn->query($query) === TRUE) {
-            echo "Record updated successfully!";
-        } else {
-            echo "Error updating record: " . $conn->error;
+            if ($conn->query($query) === TRUE) {
+                // On success, return success message for AJAX
+                echo "success";
+            } else {
+                // On failure, return error message for AJAX
+                echo "Error updating record: " . $conn->error;
+            }
         }
+    } else {
+        // If overload_id is missing, return an error message
+        echo "No overload data received or 'overload_id' is missing.";
     }
+    exit();  // Terminate the script after responding to AJAX
 }
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -82,9 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Overload Data</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
-
 </head>
 
 <body class="bg-gray-100 p-10">
@@ -92,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">Edit Overload Data</h2>
 
     <div class="overflow-x-auto">
-        <form method="POST" action="manage_overload_update.php">                
+        <form method="POST" action="">
             <table class="w-full bg-white shadow-md rounded-lg border border-gray-200">
                 <thead class="bg-blue-600 text-white text-center">
                     <tr>
@@ -120,11 +132,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) : ?>
                         <tr class="border-b hover:bg-gray-100">
+                            <!-- Hidden input for overload_id -->
                             <input type="hidden" name="overload_id[]" value="<?= $row['overload_id'] ?>">
+                            <!-- Hidden input for employee_id -->
+                            <input type="hidden" name="employee_id[]" value="<?= $row['employee_id'] ?>">
 
-                            <!-- Sticky Employee ID -->
+                            <!-- Employee Name -->
                             <td class="p-3 font-semibold sticky left-0 bg-white border-r border-gray-300 z-10">
-                                <?= htmlspecialchars($row['employee_id']) ?>
+                                <?= htmlspecialchars($row['employee_name']) ?>
                             </td>
 
                             <!-- Editable "Days" inputs -->
@@ -161,7 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td class="p-3"><input type="number" name="additional[]" value="<?= $row['additional'] ?>" class="w-16 border rounded px-2 py-1 text-center"></td>
                             <td class="p-3"><input type="number" name="adjustment_less[]" value="<?= $row['adjustment_less'] ?>" class="w-16 border rounded px-2 py-1 text-center"></td>
                             <td class="p-3 text-center font-bold text-blue-600" data-grand-total><?= htmlspecialchars($row['grand_total']) ?></td>
-                            </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
@@ -172,9 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
         </form>
-
-
     </div>
+
     <script>
         function calculateRowTotals(row) {
             let grandTotal = 0;
@@ -183,12 +196,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const dayColumns = ["wednesday", "thursday", "friday", "mtth", "mtwf", "twthf", "mw"];
 
             dayColumns.forEach(day => {
+                // Get the current "days" value (editable)
                 const days = parseFloat(row.querySelector(`input[name="${day}_days[]"]`).value) || 0;
-                const hours = parseFloat(row.querySelector(`td[data-${day}-hrs]`).textContent) || 0; // Fetch static HRS from table cell
-                const totalCell = row.querySelector(`td[data-${day}-total]`); // TOTAL is a non-editable cell
 
+                // Get the current "hrs" from the table (non-editable, fetched from the database)
+                const hours = parseFloat(row.querySelector(`td[data-${day}-hrs]`).textContent) || 0; // Static HRS from table cell
+
+                // Calculate the total (only if days are entered, the hrs are taken from DB)
                 const total = days * hours;
+
+                // Update the TOTAL column (this will only change when days change)
+                const totalCell = row.querySelector(`td[data-${day}-total]`);
                 totalCell.textContent = total.toFixed(2); // Update the TOTAL column
+
+                // Add to grand total (sum of all day totals)
                 grandTotal += total;
             });
 
@@ -197,7 +218,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const add = parseFloat(row.querySelector(`input[name="additional[]"]`).value) || 0;
             const adjustments = parseFloat(row.querySelector(`input[name="adjustment_less[]"]`).value) || 0;
 
-            // Calculate Grand Total
+            // Now include the total columns for each day in the grand total
+            const wednesdayTotal = parseFloat(row.querySelector(`td[data-wednesday-total]`).textContent) || 0;
+            const thursdayTotal = parseFloat(row.querySelector(`td[data-thursday-total]`).textContent) || 0;
+            const fridayTotal = parseFloat(row.querySelector(`td[data-friday-total]`).textContent) || 0;
+            const mtthTotal = parseFloat(row.querySelector(`td[data-mtth-total]`).textContent) || 0;
+            const mtwfTotal = parseFloat(row.querySelector(`td[data-mtwf-total]`).textContent) || 0;
+            const twthfTotal = parseFloat(row.querySelector(`td[data-twthf-total]`).textContent) || 0;
+            const mwTotal = parseFloat(row.querySelector(`td[data-mw-total]`).textContent) || 0;
+
+            // Add the totals from each day column to the grand total
+            grandTotal += wednesdayTotal + thursdayTotal + fridayTotal + mtthTotal + mtwfTotal + twthfTotal + mwTotal;
+
+            // Final Grand Total Calculation (including Less, Add, Adjustments)
             grandTotal = grandTotal - less + add - adjustments;
 
             // Update the Grand Total cell
@@ -218,20 +251,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             inputs.forEach(input => {
                 input.addEventListener("input", function() {
                     const column = this.name.replace("_days[]", ""); // Extract the column name
-                    syncDaysAcrossEmployees(column, this.value);
+
+                    if (this.name.includes('_days[]')) {
+                        syncDaysAcrossEmployees(column, this.value); // For days, sync across employees
+                    }
+                    calculateRowTotals(input.closest("tr")); // Recalculate totals when any field is modified
                 });
             });
         }
 
-        // Run script on page load
-        document.addEventListener("DOMContentLoaded", function() {
+        $(document).ready(function() {
+            // Submit form via AJAX
+            $("form").submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Send data via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "", // Current page (you can specify a different PHP file if needed)
+                    data: $(this).serialize(), // Serialize form data
+                    success: function(response) {
+                        // If successful, show success alert
+                        alert('Record updated successfully!');
+                    },
+                    error: function(xhr, status, error) {
+                        // If error occurs, show failure alert
+                        alert('Error updating record: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // Run script on page load
             document.querySelectorAll("tr.border-b").forEach(row => {
                 addCalculationListeners(row);
                 calculateRowTotals(row); // Initial calculation in case values are prefilled
             });
         });
     </script>
-
 
 </body>
 
