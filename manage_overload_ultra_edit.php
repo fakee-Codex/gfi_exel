@@ -100,6 +100,7 @@ if (!$result) {
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
 
 </head>
@@ -116,7 +117,15 @@ if (!$result) {
             <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">Edit Overload Data</h2>
             <form method="POST" action="">
 
+
+                <div class="text-right mb-4">
+                    <button id="updateButton" class="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600">
+                        Save Changes
+                    </button>
+                </div>
+
                 <div class="overflow-x-auto">
+
                     <table class="w-full bg-white shadow-md rounded-lg border border-gray-200">
                         <thead class="bg-blue-600 text-white text-center">
                             <tr>
@@ -199,13 +208,7 @@ if (!$result) {
 
 
                 </div>
-                <div class="text-right mt-4">
-                    <button id="updateButton" class="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600">
-                        Save Changes
-                    </button>
 
-
-                </div>
             </form>
             <script>
                 document.getElementById("updateButton").addEventListener("click", function(event) {
@@ -281,84 +284,74 @@ if (!$result) {
         </script>
 
         <script>
-            function calculateRowTotals(row) {
-                let grandTotal = 0;
-
-                // Define the corresponding column names for "DAYS", "HRS", and "TOTAL"
-                const dayColumns = ["wednesday", "thursday", "friday", "mtth", "mtwf", "twthf", "mw"];
-
-                dayColumns.forEach(day => {
-                    // Get the current "days" value (editable)
-                    const days = parseFloat(row.querySelector(`input[name="${day}_days[]"]`).value) || 0;
-
-                    // Get the current "hrs" from the table (non-editable, fetched from the database)
-                    const hours = parseFloat(row.querySelector(`td[data-${day}-hrs]`).textContent) || 0; // Static HRS from table cell
-
-                    // Calculate the total (only if days are entered, the hrs are taken from DB)
-                    const total = days * hours;
-
-                    // Update the TOTAL column (this will only change when days change)
-                    const totalCell = row.querySelector(`td[data-${day}-total]`);
-                    totalCell.textContent = total.toFixed(2); // Update the TOTAL column
-
-                    // Add to grand total (sum of all day totals)
-                    grandTotal += total;
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelectorAll("tr.border-b").forEach(row => {
+                    addCalculationListeners(row);
+                    calculateRowTotals(row);
                 });
-
-                // Handle "Less", "Add", and "Adjustments" calculations
-                const less = parseFloat(row.querySelector(`input[name="less_lateOL[]"]`).value) || 0;
-                const add = parseFloat(row.querySelector(`input[name="additional[]"]`).value) || 0;
-                const adjustments = parseFloat(row.querySelector(`input[name="adjustment_less[]"]`).value) || 0;
-
-                // Now include the total columns for each day in the grand total
-                const wednesdayTotal = parseFloat(row.querySelector(`td[data-wednesday-total]`).textContent) || 0;
-                const thursdayTotal = parseFloat(row.querySelector(`td[data-thursday-total]`).textContent) || 0;
-                const fridayTotal = parseFloat(row.querySelector(`td[data-friday-total]`).textContent) || 0;
-                const mtthTotal = parseFloat(row.querySelector(`td[data-mtth-total]`).textContent) || 0;
-                const mtwfTotal = parseFloat(row.querySelector(`td[data-mtwf-total]`).textContent) || 0;
-                const twthfTotal = parseFloat(row.querySelector(`td[data-twthf-total]`).textContent) || 0;
-                const mwTotal = parseFloat(row.querySelector(`td[data-mw-total]`).textContent) || 0;
-
-                // Add the totals from each day column to the grand total
-                grandTotal = wednesdayTotal + thursdayTotal + fridayTotal + mtthTotal + mtwfTotal + twthfTotal + mwTotal;
-
-                // Final Grand Total Calculation (including Less, Add, Adjustments)
-                grandTotal = grandTotal - less + add - adjustments;
-
-                // Update the Grand Total cell
-                const grandTotalCell = row.querySelector(`td[data-grand-total]`);
-                grandTotalCell.textContent = grandTotal.toFixed(2);
-            }
-
-            function syncDaysAcrossEmployees(column, value) {
-                document.querySelectorAll(`input[name="${column}_days[]"]`).forEach(input => {
-                    input.value = value;
-                    calculateRowTotals(input.closest("tr"));
-                });
-            }
+            });
 
             function addCalculationListeners(row) {
                 const inputs = row.querySelectorAll("input[name$='_days[]'], input[name='less_lateOL[]'], input[name='additional[]'], input[name='adjustment_less[]']");
 
                 inputs.forEach(input => {
                     input.addEventListener("input", function() {
-                        const column = this.name.replace("_days[]", ""); // Extract the column name
-
-                        if (this.name.includes('_days[]')) {
-                            syncDaysAcrossEmployees(column, this.value); // For days, sync across employees
+                        const dayMatch = input.name.match(/(wednesday|thursday|friday|mtth|mtwf|twthf|mw)_days\[\]/);
+                        if (dayMatch) {
+                            const dayColumn = dayMatch[1] + "_days[]";
+                            syncColumnInputs(dayColumn); // Sync all inputs in the same column
                         }
-                        calculateRowTotals(input.closest("tr")); // Recalculate totals when any field is modified
+                        calculateRowTotals(row);
                     });
                 });
             }
 
-            $(document).ready(function() {
-                // Run script on page load
-                document.querySelectorAll("tr.border-b").forEach(row => {
-                    addCalculationListeners(row);
-                    calculateRowTotals(row); // Initial calculation in case values are prefilled
+            function calculateRowTotals(row) {
+                let grandTotal = 0;
+                const dayColumns = ["wednesday", "thursday", "friday", "mtth", "mtwf", "twthf", "mw"];
+
+                dayColumns.forEach(day => {
+                    const daysInput = row.querySelector(`input[name="${day}_days[]"]`);
+                    const hoursCell = row.querySelector(`td[data-${day}-hrs]`);
+                    const totalCell = row.querySelector(`td[data-${day}-total]`);
+
+                    if (daysInput && hoursCell && totalCell) {
+                        const days = parseFloat(daysInput.value) || 0;
+                        const hours = parseFloat(hoursCell.textContent) || 0;
+                        const total = days * hours;
+
+                        totalCell.textContent = total.toFixed(2);
+                        grandTotal += total;
+                    }
                 });
-            });
+
+                // Handle Less, Additional, and Adjustments
+                const less = parseFloat(row.querySelector(`input[name="less_lateOL[]"]`).value) || 0;
+                const add = parseFloat(row.querySelector(`input[name="additional[]"]`).value) || 0;
+                const adjustments = parseFloat(row.querySelector(`input[name="adjustment_less[]"]`).value) || 0;
+
+                // Final Grand Total Calculation
+                grandTotal = grandTotal - less + add - adjustments;
+
+                // Update Grand Total cell
+                const grandTotalCell = row.querySelector(`td[data-grand-total]`);
+                if (grandTotalCell) {
+                    grandTotalCell.textContent = grandTotal.toFixed(2);
+                }
+            }
+
+            // ✅ Sync all rows' inputs for the given column (e.g., "wednesday_days[]")
+            function syncColumnInputs(inputName) {
+                const referenceInput = document.querySelector(`input[name="${inputName}"]`);
+                if (!referenceInput) return;
+
+                const value = referenceInput.value; // Get the typed value
+
+                document.querySelectorAll(`input[name="${inputName}"]`).forEach(input => {
+                    input.value = value;
+                    calculateRowTotals(input.closest("tr")); // Recalculate row totals after updating values
+                });
+            }
         </script>
 
 
