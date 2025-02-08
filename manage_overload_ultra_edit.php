@@ -299,9 +299,13 @@ if (!$result) {
                         const dayMatch = input.name.match(/(wednesday|thursday|friday|mtth|mtwf|twthf|mw)_days\[\]/);
                         if (dayMatch) {
                             const dayColumn = dayMatch[1] + "_days[]";
-                            syncColumnInputs(dayColumn); // Sync all inputs in the same column
+                            syncColumnInputs(dayColumn, input.value); // Sync all inputs in the same column
                         }
                         calculateRowTotals(row);
+                    });
+
+                    input.addEventListener("focus", function() {
+                        input.setSelectionRange(input.value.length, input.value.length);
                     });
                 });
             }
@@ -326,9 +330,9 @@ if (!$result) {
                 });
 
                 // Handle Less, Additional, and Adjustments
-                const less = parseFloat(row.querySelector(`input[name="less_lateOL[]"]`).value) || 0;
-                const add = parseFloat(row.querySelector(`input[name="additional[]"]`).value) || 0;
-                const adjustments = parseFloat(row.querySelector(`input[name="adjustment_less[]"]`).value) || 0;
+                const less = parseFloat(row.querySelector(`input[name="less_lateOL[]"]`)?.value) || 0;
+                const add = parseFloat(row.querySelector(`input[name="additional[]"]`)?.value) || 0;
+                const adjustments = parseFloat(row.querySelector(`input[name="adjustment_less[]"]`)?.value) || 0;
 
                 // Final Grand Total Calculation
                 grandTotal = grandTotal - less + add - adjustments;
@@ -340,16 +344,15 @@ if (!$result) {
                 }
             }
 
-            // ✅ Sync all rows' inputs for the given column (e.g., "wednesday_days[]")
-            function syncColumnInputs(inputName) {
-                const referenceInput = document.querySelector(`input[name="${inputName}"]`);
-                if (!referenceInput) return;
-
-                const value = referenceInput.value; // Get the typed value
-
+            // ✅ Sync all rows' inputs for the given column while allowing user input in any row
+            function syncColumnInputs(inputName, value) {
                 document.querySelectorAll(`input[name="${inputName}"]`).forEach(input => {
                     input.value = value;
-                    calculateRowTotals(input.closest("tr")); // Recalculate row totals after updating values
+                });
+
+                // Recalculate all row totals after updating values
+                document.querySelectorAll("tr.border-b").forEach(row => {
+                    calculateRowTotals(row);
                 });
             }
         </script>
