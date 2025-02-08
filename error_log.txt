@@ -1,0 +1,13 @@
+Login attempt: Email = admin@gmail.comSQL executed. Rows found: 1User found: Array
+(
+    [id] => 1
+    [password] => asd
+    [email] => admin@gmail.com
+)
+Password verification failed for: admin@gmail.comLogin attempt: Email = admin@gmail.comSQL executed. Rows found: 1User found: Array
+(
+    [id] => 1
+    [password] => $2y$10$6lRgFyZ0YpMCGLG2HCw8C.YyjSN9k4m370O7Ofvn8nhKheqHCQnG2
+    [email] => admin@gmail.com
+)
+Password verification successful for user: admin@gmail.com
