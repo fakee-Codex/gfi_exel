@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2025 at 02:14 AM
+-- Generation Time: Feb 08, 2025 at 11:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,6 +47,7 @@ CREATE TABLE `computation` (
   `absent_late_total` decimal(10,2) NOT NULL,
   `pagibig` decimal(10,2) NOT NULL,
   `mp2` decimal(10,2) NOT NULL,
+  `sss` decimal(10,0) NOT NULL,
   `canteen` decimal(10,2) NOT NULL,
   `others` decimal(10,2) NOT NULL,
   `total_deduction` decimal(10,2) NOT NULL,
@@ -80,7 +81,8 @@ CREATE TABLE `contributions` (
 INSERT INTO `contributions` (`contributions_id`, `employee_id`, `sss_ee`, `pag_ibig_ee`, `philhealth_ee`, `sss_er`, `pag_ibig_er`, `philhealth_er`, `medical_savings`, `retirement`) VALUES
 (11, 401, 1350, 210, 750, 2850, 205, 750, 440, 476),
 (12, 402, 2250, 200, 1250, 4750, 200, 1250, 420, 360),
-(14, 404, 1575, 200, 875, 3325, 200, 875, 150, 530);
+(14, 404, 1575, 200, 875, 3325, 200, 875, 150, 530),
+(16, 423, 540, 200, 300, 1140, 200, 300, 800, 550);
 
 -- --------------------------------------------------------
 
@@ -96,6 +98,9 @@ CREATE TABLE `employees` (
   `classification` varchar(255) NOT NULL,
   `basic_salary` decimal(10,2) NOT NULL,
   `honorarium` decimal(10,2) DEFAULT 0.00,
+  `overload_rate` decimal(10,0) NOT NULL,
+  `watch_reward` decimal(10,0) NOT NULL,
+  `absent_lateRate` decimal(10,0) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -103,11 +108,14 @@ CREATE TABLE `employees` (
 -- Dumping data for table `employees`
 --
 
-INSERT INTO `employees` (`employee_id`, `first_name`, `last_name`, `employee_type`, `classification`, `basic_salary`, `honorarium`, `created_at`) VALUES
-(401, 'Manila', 'Bay', 'full-time', 'Dancer', 30000.00, 6000.00, '2025-01-14 09:43:19'),
-(402, 'Willie', 'Pacquiao', 'full-time', 'Boxer', 50000.00, 10000.00, '2025-01-14 09:44:02'),
-(403, 'genisis', 'mantilla', 'full-time', 'Roblox', 100000.00, 10000.00, '2025-01-14 10:13:30'),
-(404, 'John', 'Joseph', 'part-time', 'Monkey Elepant', 35000.00, 7000.00, '2025-01-14 10:14:56');
+INSERT INTO `employees` (`employee_id`, `first_name`, `last_name`, `employee_type`, `classification`, `basic_salary`, `honorarium`, `overload_rate`, `watch_reward`, `absent_lateRate`, `created_at`) VALUES
+(401, 'Manila', 'Bay', 'full-time', 'Dancer', 16000.00, 6000.00, 3545, 3443, 154, '2025-01-14 09:43:19'),
+(402, 'Williedfg', 'Pacquiao', 'full-time', 'Boxer', 25000.00, 20000.00, 5345, 3342, 240, '2025-01-14 09:44:02'),
+(403, 'genisis', 'mantilla', 'full-time', 'Roblox', 40000.00, 10000.00, 6423, 6454, 385, '2025-01-14 10:13:30'),
+(404, 'John', 'Joseph', 'part-time', 'Monkey Elepant', 8000.00, 345.00, 433, 432, 77, '2025-01-14 10:14:56'),
+(423, 'MIley', 'Zyrus', 'full-time', 'Bao', 15000.00, 1000.00, 523, 323, 144, '2025-02-01 05:07:37'),
+(424, 'Mykas', 'Lugan', 'full-time', 'Inventories', 18000.00, 100.00, 334, 500, 173, '2025-02-04 02:35:06'),
+(425, 'Hazel', 'Pecodana', 'full-time', 'Yobmot', 2000.00, 353.00, 423, 445, 19, '2025-02-07 03:22:24');
 
 -- --------------------------------------------------------
 
@@ -150,8 +158,9 @@ CREATE TABLE `overload` (
 --
 
 INSERT INTO `overload` (`overload_id`, `employee_id`, `wednesday_days`, `wednesday_hrs`, `wednesday_total`, `thursday_days`, `thursday_hrs`, `thursday_total`, `friday_days`, `friday_hrs`, `friday_total`, `mtth_days`, `mtth_hrs`, `mtth_total`, `mtwf_days`, `mtwf_hrs`, `mtwf_total`, `twthf_days`, `twthf_hrs`, `twthf_total`, `mw_days`, `mw_hrs`, `mw_total`, `less_lateOL`, `additional`, `adjustment_less`, `grand_total`) VALUES
-(10, 401, 5.00, 3.00, 15.00, 5.00, 3.00, 9.00, 2.00, 3.00, 6.00, 0.00, 3.00, 0.00, 0.00, 3.00, 0.00, 0.00, 3.00, 0.00, 0.00, 3.00, 0.00, 2.00, 5.00, 0.00, 24.00),
-(11, 403, 3.00, 4.00, 0.00, 5.00, 2.00, 4.00, 4.00, 2.00, 8.00, 3.00, 6.00, 18.00, 0.00, 5.00, 0.00, 5.00, 3.00, 15.00, 4.00, 2.00, 8.00, 5.00, 10.00, 5.00, 53.00);
+(18, 401, 20.00, 5.00, 100.00, 4.00, 4.00, 16.00, 3.00, 4.00, 12.00, 2.00, 5.00, 10.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 12.00, 3.00, 4.00, 125.00),
+(19, 403, 20.00, 12.00, 240.00, 4.00, 2.00, 8.00, 4.00, 1.00, 4.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 3.00, 4.00, 12.00, 20.00, 30.00, 3.00, 271.00),
+(20, 401, 20.00, 3.00, 60.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 60.00);
 
 --
 -- Indexes for dumped tables
@@ -192,25 +201,25 @@ ALTER TABLE `overload`
 -- AUTO_INCREMENT for table `computation`
 --
 ALTER TABLE `computation`
-  MODIFY `computation_id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `computation_id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `contributions`
 --
 ALTER TABLE `contributions`
-  MODIFY `contributions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `contributions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=423;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=426;
 
 --
 -- AUTO_INCREMENT for table `overload`
 --
 ALTER TABLE `overload`
-  MODIFY `overload_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `overload_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
