@@ -111,7 +111,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="sss_er" class="form-label fw-semibold">SSS (Employer Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="sss_er" id="sss_er" class="form-control form-control-sm border-primary" placeholder="Enter SSS contribution" required>
                             </div>
                         </div>
@@ -120,7 +120,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="pagibig_er" class="form-label fw-semibold">Pag-ibig (Employer Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="pagibig_er" id="pagibig_er" class="form-control form-control-sm border-primary" value="200" required>
                             </div>
                         </div>
@@ -129,7 +129,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="philhealth_er" class="form-label fw-semibold">PhilHealth (Employer Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="philhealth_er" id="philhealth_er" class="form-control form-control-sm border-primary" placeholder="Enter PhilHealth contribution" required>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="sss_ee" class="form-label fw-semibold">SSS (Employee Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="sss_ee" id="sss_ee" class="form-control form-control-sm border-primary" placeholder="Enter SSS contribution" required>
                             </div>
                         </div>
@@ -154,7 +154,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="pagibig_ee" class="form-label fw-semibold">Pag-ibig (Employee Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="pagibig_ee" id="pagibig_ee" class="form-control form-control-sm border-primary" value="200" required>
                             </div>
                         </div>
@@ -163,7 +163,7 @@ $employees_result = $conn->query($employees_sql);
                         <div class="mb-3">
                             <label for="philhealth_ee" class="form-label fw-semibold">PhilHealth (Employee Share)</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="philhealth_ee" id="philhealth_ee" class="form-control form-control-sm border-primary" placeholder="Enter PhilHealth contribution" required>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ $employees_result = $conn->query($employees_sql);
                         <div>
                             <label for="medical_savings" class="form-label fw-semibold">Medical</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="medical_savings" id="medical_savings"
                                     class="form-control form-control-sm border-primary text-center"
                                     placeholder="Medical" style="max-width: 150px;" required>
@@ -190,7 +190,7 @@ $employees_result = $conn->query($employees_sql);
                         <div>
                             <label for="retirement" class="form-label fw-semibold">Retirement</label>
                             <div class="input-group">
-                                <span class="input-group-text">₱</span>
+                                <span class="input-group-text"></span>
                                 <input type="number" step="0.01" name="retirement" id="retirement"
                                     class="form-control form-control-sm border-primary text-center"
                                     placeholder="Retirement" style="max-width: 150px;" required>

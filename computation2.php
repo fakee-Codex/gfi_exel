@@ -277,10 +277,11 @@ $result = $conn->query($sql);
                         ?>
                     </tbody>
                 </table>
+
                 <script>
                     function printData(basicSalary, fullName, honorarium, grossPay, sssTotal, philhealthTotal, pagIbigTotal, medicalSavings, retirement, totalDeduction, netPay) {
-                        // Open the print.php page and pass all the data via URL
-                        window.location.href = 'print.php?basic_salary=' + encodeURIComponent(basicSalary) +
+                        // Open the print.php page in a new tab and pass all the data via URL
+                        window.open('print.php?basic_salary=' + encodeURIComponent(basicSalary) +
                             '&full_name=' + encodeURIComponent(fullName) +
                             '&honorarium=' + encodeURIComponent(honorarium) +
                             '&gross_pay=' + encodeURIComponent(grossPay) +
@@ -290,22 +291,23 @@ $result = $conn->query($sql);
                             '&total_deduction=' + encodeURIComponent(totalDeduction) +
                             '&philhealth_total=' + encodeURIComponent(philhealthTotal) +
                             '&pag_ibig_total=' + encodeURIComponent(pagIbigTotal) +
-                            '&net_pay=' + encodeURIComponent(netPay);
+                            '&net_pay=' + encodeURIComponent(netPay), '_blank');
                     }
                 </script>
 
 
 
+
             </div>
             <div class="flex justify-end mt-5 gap-x-4">
-                <button id="printTableBtn" class="save-btn mb-4 bg-blue-500 text-white px-4 py-2 rounded" onclick="window.location.href='print2.php';">Print Table</button>
-
+                <button id="printTableBtn" class="save-btn mb-4 bg-blue-500 text-white px-4 py-2 rounded" onclick="window.open('print2.php', '_blank');">Print Table</button>
 
                 <button id="saveTableBtn" class="save-btn mb-4">Save Table</button>
             </div>
-
-
         </div>
+
+
+        </div>s
         <script>
 
         </script>

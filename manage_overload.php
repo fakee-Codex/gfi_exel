@@ -149,7 +149,7 @@ try {
             </div>
             <div class="text-right mt-4">
                 <a href="manage_overload_ultra_edit.php" class="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600">
-                    Edit Tables
+                    Edit all Days
                 </a>
 
             </div>

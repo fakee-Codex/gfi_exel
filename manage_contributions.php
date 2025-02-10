@@ -86,14 +86,14 @@ $result = $conn->query($sql);
                         echo "<tr>
                     <td>{$row['Name']}</td>
                     <td>{$row['Type']}</td>
-                    <td>₱" . number_format($row['Basic'], 2) . "</td>
-                    <td>₱" . number_format($sss_total, 2) . "</td>
-                    <td>₱" . number_format($pagibig_total, 2) . "</td>
-                    <td>₱" . number_format($philhealth_total, 2) . "</td>
-                    <td>₱" . number_format($total_ee, 2) . "</td>
-                    <td>₱" . number_format($total_er, 2) . "</td>
-                    <td>₱" . number_format($medical_savings, 2) . "</td>
-                    <td>₱" . number_format($retirement, 2) . "</td>
+                    <td>" . number_format($row['Basic'], 2) . "</td>
+                    <td>" . number_format($sss_total, 2) . "</td>
+                    <td>" . number_format($pagibig_total, 2) . "</td>
+                    <td>" . number_format($philhealth_total, 2) . "</td>
+                    <td>" . number_format($total_ee, 2) . "</td>
+                    <td>" . number_format($total_er, 2) . "</td>
+                    <td>" . number_format($medical_savings, 2) . "</td>
+                    <td>" . number_format($retirement, 2) . "</td>
                     <td>
                         <a href='manage_contributions_edit.php?id={$row['contributions_id']}' class='btn btn-warning btn-sm'>Edit</a>
                         <button class='btn btn-info btn-sm' data-bs-toggle='modal' data-bs-target='#viewModal' 

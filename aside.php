@@ -22,62 +22,38 @@
         <li>
             <a href="sidebarManageemployee.php">
                 <i class='bx bx-user'></i>
-                <span class="links_name">employee</span>
+                <span class="links_name">List of Employees</span>
             </a>
-            <span class="tooltip">User</span>
+            <span class="tooltip">Employees</span>
         </li>
         <li>
             <a href="manage_contributions.php">
-                <i class='bx bx-chat'></i>
-                <span class="links_name">CONTRIBUTIONS</span>
+                <i class='bx bx-donate-heart'></i>
+                <span class="links_name">Contributions</span>
             </a>
-            <span class="tooltip">Messages</span>
+            <span class="tooltip">Contributions</span>
         </li>
         <li>
             <a href="sidebar.php">
-                <i class='bx bx-chat'></i>
-                <span class="links_name">computation</span>
+                <i class='bx bx-calculator'></i>
+                <span class="links_name">Computation 1-15</span>
             </a>
-            <span class="tooltip">Messages</span>
+            <span class="tooltip">Computation1</span>
         </li>
 
         <li>
             <a href="computation2.php">
-                <i class='bx bx-chat'></i>
-                <span class="links_name">computation2</span>
+                <i class='bx bx-calculator'></i>
+                <span class="links_name">Computation 16-30</span>
             </a>
-            <span class="tooltip">Messages</span>
+            <span class="tooltip">Computation2</span>
         </li>
-
-
-
         <li>
             <a href="manage_overload.php">
-                <i class='bx bx-pie-chart-alt-2'></i>
+                <i class='bx bx-time'></i>
                 <span class="links_name">Manage Overload</span>
             </a>
-            <span class="tooltip">Analytics</span>
-        </li>
-        <li>
-            <a href="">
-                <i class='bx bx-folder'></i>
-                <span class="links_name">Files</span>
-            </a>
-            <span class="tooltip">Files</span>
-        </li>
-        <li>
-            <a href="">
-                <i class='bx bx-cart-alt'></i>
-                <span class="links_name">Order</span>
-            </a>
-            <span class="tooltip">Order</span>
-        </li>
-        <li>
-            <a href="">
-                <i class='bx bx-heart'></i>
-                <span class="links_name">Saved</span>
-            </a>
-            <span class="tooltip">Saved</span>
+            <span class="tooltip">Overload</span>
         </li>
         <li>
             <a href="">

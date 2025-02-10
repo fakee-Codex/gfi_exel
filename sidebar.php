@@ -168,21 +168,21 @@ $result = $conn->query($sql);
                 <table id="crudTable" class="table-auto w-full">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="p-2 bg-gray-200 sticky gg">Name</th> <!-- Name with Sticky -->
+                            <th rowspan="2" class="p-2 bg-gray-200 sticky gg">NAME</th> <!-- Name with Sticky -->
                             <th colspan="2" class="p-2 bg-gray-200">Full-Time</th>
-                            <th colspan="2" class="p-2 bg-gray-200">Overloads</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Total</th>
-                            <th colspan="3" class="p-2 bg-gray-200">CLOVES</th>
-                            <th colspan="3" class="p-2 bg-gray-200">Adjustment</th>
-                            <th colspan="3" class="p-2 bg-gray-200">Watch Reward</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Gross Pay</th>
-                            <th colspan="3" class="p-2 bg-gray-200">Absences/Late</th>
-                            <th colspan="3" class="p-2 bg-gray-200">Loans</th>
-                            <th colspan="5" class="p-2 bg-gray-200">Contributions</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Canteen</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Others</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Total Deductions</th>
-                            <th rowspan="2" class="p-2 bg-gray-200">Net Pay</th>
+                            <th colspan="2" class="p-2 bg-gray-200">OVERLOADS</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">TOTAL</th>
+                            <th colspan="3" class="p-2 bg-gray-200">CLUB</th>
+                            <th colspan="3" class="p-2 bg-gray-200">ADJUSTMENTS</th>
+                            <th colspan="3" class="p-2 bg-gray-200">WATCH REWARD</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">GROSS PAY</th>
+                            <th colspan="3" class="p-2 bg-gray-200">ABSENCE/LATE</th>
+                            <th colspan="4" class="p-2 bg-gray-200">LOANS</th>
+                            <th colspan="4" class="p-2 bg-gray-200">CONTRIBUTIONS</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">CANTEEN</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">OTHERS</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">TOTAL DEDUCTIONS</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">NETPAY</th>
                             <th rowspan="2" class="p-2 bg-gray-200">Action</th>
 
                         </tr>
@@ -206,9 +206,9 @@ $result = $conn->query($sql);
                             <th class="p-2 bg-gray-200">HDMF</th>
                             <th class="p-2 bg-gray-200">MP2</th>
                             <th class="p-2 bg-gray-200">SSS</th>
+                            <th class="p-2 bg-gray-200">RET.</th>
                             <th class="p-2 bg-gray-200">MED.S</th>
                             <th class="p-2 bg-gray-200">SSS</th>
-                            <th class="p-2 bg-gray-200">RET.</th>
                             <th class="p-2 bg-gray-200">P-IBIG</th>
                             <th class="p-2 bg-gray-200">PHIC</th>
 

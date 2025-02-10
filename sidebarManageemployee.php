@@ -13,9 +13,17 @@ $result = $conn->query($sql_fetch);
 $employee = null;
 if (isset($_GET['edit_id'])) {
     $employee_id = $_GET['edit_id'];
-    $sql_fetch_edit = "SELECT * FROM employees WHERE employee_id = $employee_id";
-    $result_edit = $conn->query($sql_fetch_edit);
-    $employee = $result_edit->fetch_assoc();
+    $sql_fetch_edit = "SELECT * FROM employees WHERE employee_id = ?";
+    $stmt = $conn->prepare($sql_fetch_edit);
+    $stmt->bind_param('i', $employee_id);  // 'i' for integer
+    $stmt->execute();
+    $result_edit = $stmt->get_result();
+
+    if ($result_edit->num_rows > 0) {
+        $employee = $result_edit->fetch_assoc();
+    } else {
+        echo "Employee not found!";
+    }
 }
 
 // Check if the form is submitted for adding or updating employees
@@ -23,30 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_POST['add'])) {
 
-        if (isset($_POST['add'])) {
+        for ($i = 0; $i < count($_POST['first_name']); $i++) {
+            $first_name = $conn->real_escape_string($_POST['first_name'][$i]);
+            $last_name = $conn->real_escape_string($_POST['last_name'][$i]);
+            $employee_type = $conn->real_escape_string($_POST['employee_type'][$i]);
+            $classification = $conn->real_escape_string($_POST['classification'][$i]);
+            $basic_salary = $conn->real_escape_string($_POST['basic_salary'][$i]);
+            $honorarium = $conn->real_escape_string($_POST['honorarium'][$i]);
+            $overload_rate = $conn->real_escape_string($_POST['overload_rate'][$i]);
+            $watch_reward = $conn->real_escape_string($_POST['watch_reward'][$i]);
+            $absent_lateRate = $conn->real_escape_string($_POST['absent_lateRate'][$i]);
 
-            // Loop through each employee entry
-            for ($i = 0; $i < count($_POST['first_name']); $i++) {
-                $first_name = $conn->real_escape_string($_POST['first_name'][$i]);
-                $last_name = $conn->real_escape_string($_POST['last_name'][$i]);
-                $employee_type = $conn->real_escape_string($_POST['employee_type'][$i]);
-                $classification = $conn->real_escape_string($_POST['classification'][$i]);
-                $basic_salary = $conn->real_escape_string($_POST['basic_salary'][$i]);
-                $honorarium = $conn->real_escape_string($_POST['honorarium'][$i]);
-                $overload_rate = $conn->real_escape_string($_POST['overload_rate'][$i]);
-                $watch_reward = $conn->real_escape_string($_POST['watch_reward'][$i]);
-                $absent_lateRate = $conn->real_escape_string($_POST['absent_lateRate'][$i]);
-
-                // Prepare the SQL statement for INSERT
-                $stmt = $conn->prepare("INSERT INTO employees (first_name, last_name, employee_type, classification, basic_salary, honorarium, overload_rate, watch_reward, absent_lateRate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssddddd", $first_name, $last_name, $employee_type, $classification, $basic_salary, $honorarium, $overload_rate, $watch_reward, $absent_lateRate);
-                $stmt->execute();
-            }
-
-            // Redirect to avoid resubmission
-            header("Location: " . $_SERVER['PHP_SELF'] . "?success=true");
-            exit();
+            // Prepare the SQL statement for INSERT
+            $stmt = $conn->prepare("INSERT INTO employees (first_name, last_name, employee_type, classification, basic_salary, honorarium, overload_rate, watch_reward, absent_lateRate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssddddd", $first_name, $last_name, $employee_type, $classification, $basic_salary, $honorarium, $overload_rate, $watch_reward, $absent_lateRate);
+            $stmt->execute();
         }
+
+        // Redirect to avoid resubmission
+        header("Location: " . $_SERVER['PHP_SELF'] . "?success=true");
+        exit();
     } else if (isset($_POST['update'])) {
         // Update employee data
         $employee_id = $conn->real_escape_string($_POST['employee_id']);
@@ -60,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $watch_reward = $conn->real_escape_string($_POST['watch_reward']);
         $absent_lateRate = $conn->real_escape_string($_POST['absent_lateRate']);
 
-        // Prepare the SQL statement based on updating employee data
+        // Prepare the SQL statement for UPDATE
         $stmt = $conn->prepare("UPDATE employees SET first_name = ?, last_name = ?, employee_type = ?, classification = ?, basic_salary = ?, honorarium = ?, overload_rate = ?, watch_reward = ?, absent_lateRate = ? WHERE employee_id = ?");
         $stmt->bind_param("ssssdddddi", $first_name, $last_name, $employee_type, $classification, $basic_salary, $honorarium, $overload_rate, $watch_reward, $absent_lateRate, $employee_id);
         $stmt->execute();
@@ -70,6 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit();
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,33 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Function to toggle between views (Employee List, Add Employee, Edit Employee)
-        function toggleView(view) {
-            if (view === 'employeeList') {
-                document.getElementById('employeeList').style.display = 'block';
-                document.getElementById('addEmployeeForm').style.display = 'none';
-                document.getElementById('editEmployeeForm').style.display = 'none';
-            } else if (view === 'addEmployee') {
-                document.getElementById('employeeList').style.display = 'none';
-                document.getElementById('editEmployeeForm').style.display = 'none';
-                document.getElementById('addEmployeeForm').style.display = 'block';
-            } else if (view === 'editEmployee') {
-                document.getElementById('employeeList').style.display = 'none';
-                document.getElementById('addEmployeeForm').style.display = 'none';
-                document.getElementById('editEmployeeForm').style.display = 'block';
-            }
-        }
-
-        // Check if we are on an edit page and show the edit form
-        window.onload = function() {
-            if (window.location.search.indexOf('edit_id') > -1) {
-                toggleView('editEmployee');
-            } else {
-                toggleView('employeeList');
-            }
-        };
-    </script>
 </head>
 
 <body class="bg-gray-100">
@@ -121,6 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div id="employeeList" class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Employee List</h2>
                 <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 mb-4" onclick="toggleView('addEmployee')">ADD EMPLOYEE</button>
+
+                <!-- Centered Search Bar Section -->
+                <div class="flex justify-center mb-4">
+                    <input type="text" id="searchInput" class="py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search employee..." onkeyup="searchEmployee()">
+                    <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 ml-2" onclick="searchEmployee()">Search</button>
+                </div>
 
                 <div class="overflow-x-auto bg-white shadow-md rounded-lg">
                     <table class="w-full table-auto">
@@ -143,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <th class="px-4 py-2">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="employeeTable">
                             <?php
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
@@ -152,11 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <td class='px-4 py-2'>" . $row['first_name'] . " " . $row['last_name'] . "</td>
                                             <td class='px-4 py-2'>" . ucfirst($row['employee_type']) . "</td>
                                             <td class='px-4 py-2'>" . $row['classification'] . "</td>
-                                            <td class='px-4 py-2'>₱" . number_format($row['basic_salary'], 2) . "</td>
-                                            <td class='px-4 py-2'>₱" . number_format($row['honorarium'], 2) . "</td>
-                                            <td class='px-4 py-2'>₱" . number_format($row['overload_rate'], 2) . "</td>
-                                            <td class='px-4 py-2'>₱" . number_format($row['watch_reward'], 2) . "</td>
-                                            <td class='px-4 py-2'>₱" . number_format($row['absent_lateRate'], 2) . "</td>
+                                            <td class='px-4 py-2'>" . number_format($row['basic_salary'], 2) . "</td>
+                                            <td class='px-4 py-2'>" . number_format($row['honorarium'], 2) . "</td>
+                                            <td class='px-4 py-2'>" . number_format($row['overload_rate'], 2) . "</td>
+                                            <td class='px-4 py-2'>" . number_format($row['watch_reward'], 2) . "</td>
+                                            <td class='px-4 py-2'>" . number_format($row['absent_lateRate'], 2) . "</td>
                                             <td class='px-4 py-2'>
                                                 <button class='bg-green-500 text-white py-1 px-3 rounded-md shadow hover:bg-green-600' onclick='window.location.href=\"?edit_id=" . $row['employee_id'] . "\"'>EDIT</button>
                                             </td>
@@ -186,6 +171,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="text" name="last_name[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
                     <div class="form-group">
+                        <label for="last_name" class="form-label text-sm font-medium text-white">Suffix / Title</label>
+                        <input type="text" placeholder="eg. Sr, LPT" name="last_name[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="form-group">
                         <label for="employee_type" class="form-label text-sm font-medium text-white">Employee Type</label>
                         <select name="employee_type[]" class="form-select block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                             <option value="full-time">Full-Time</option>
@@ -201,8 +190,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="number" name="basic_salary[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required oninput="calculateRate(this)">
                     </div>
                     <div class="form-group">
-                        <label for="honorarium" class="form-label text-sm font-medium text-white">Honorarium</label>
+                        <label for="honorarium" class="form-label text-sm font-medium text-white">F&S Development</label>
                         <input type="number" name="honorarium[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <div class="form-group">
+                        <label for="honorarium" class="form-label text-sm font-medium text-white">Incentives</label>
+                        <input type="number" name="honorarium[]" class="form-control block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">    
                     </div>
                     <div class="form-group">
                         <label for="overload_rate" class="form-label text-sm font-medium text-white">Overload Rate</label>
@@ -283,6 +275,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <script>
+                function toggleView(view) {
+                    console.log(view); // Check the value of the `view` parameter in the console
+
+                    // Hide all forms first
+                    document.getElementById('employeeList').style.display = 'none';
+                    document.getElementById('addEmployeeForm').style.display = 'none';
+                    document.getElementById('editEmployeeForm').style.display = 'none';
+
+                    // Now show the selected view
+                    if (view === 'employeeList') {
+                        document.getElementById('employeeList').style.display = 'block';
+                    } else if (view === 'addEmployee') {
+                        document.getElementById('addEmployeeForm').style.display = 'block';
+                    } else if (view === 'editEmployee') {
+                        document.getElementById('editEmployeeForm').style.display = 'block';
+                    }
+                }
+
+                // Call this function on page load to show the correct view (Employee List or Edit Form)
+                window.onload = function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const editId = urlParams.get('edit_id');
+
+                    if (editId) {
+                        toggleView('editEmployee');
+                    } else {
+                        toggleView('employeeList');
+                    }
+                };
+
                 function calculateRate(inputElement) {
                     let basicSalary = parseFloat(inputElement.value);
 
@@ -295,6 +317,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         absentLateRateField.value = absentLateRate.toFixed(2);
                     } else {
                         absentLateRateField.value = "";
+                    }
+                }
+
+                function searchEmployee() {
+                    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+                    const employeeTable = document.getElementById('employeeTable');
+                    const rows = employeeTable.getElementsByTagName('tr');
+
+                    for (let i = 0; i < rows.length; i++) {
+                        const cells = rows[i].getElementsByTagName('td');
+                        let matchFound = false;
+
+                        for (let j = 0; j < cells.length; j++) {
+                            if (cells[j].textContent.toLowerCase().includes(searchInput)) {
+                                matchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (matchFound) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
                     }
                 }
             </script>

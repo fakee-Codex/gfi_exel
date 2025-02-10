@@ -56,17 +56,17 @@
                             <!-- Employee Share -->
                             <div class="col-12 mb-3">
                                 <h6 class="text-primary fw-bold">Employee Share</h6>
-                                <p><strong>SSS:</strong> ₱<?= htmlspecialchars(number_format($contribution['sss_ee'], 2)) ?></p>
-                                <p><strong>Pag-ibig:</strong> ₱<?= htmlspecialchars(number_format($contribution['pag_ibig_ee'], 2)) ?></p>
-                                <p><strong>PhilHealth:</strong> ₱<?= htmlspecialchars(number_format($contribution['philhealth_ee'], 2)) ?></p>
+                                <p><strong>SSS:</strong><?= htmlspecialchars(number_format($contribution['sss_ee'], 2)) ?></p>
+                                <p><strong>Pag-ibig:</strong><?= htmlspecialchars(number_format($contribution['pag_ibig_ee'], 2)) ?></p>
+                                <p><strong>PhilHealth:</strong><?= htmlspecialchars(number_format($contribution['philhealth_ee'], 2)) ?></p>
                             </div>
 
                             <!-- Employer Share -->
                             <div class="col-12">
                                 <h6 class="text-success fw-bold">Employer Share</h6>
-                                <p><strong>SSS:</strong> ₱<?= htmlspecialchars(number_format($contribution['sss_er'], 2)) ?></p>
-                                <p><strong>Pag-ibig:</strong> ₱<?= htmlspecialchars(number_format($contribution['pag_ibig_er'], 2)) ?></p>
-                                <p><strong>PhilHealth:</strong> ₱<?= htmlspecialchars(number_format($contribution['philhealth_er'], 2)) ?></p>
+                                <p><strong>SSS:</strong><?= htmlspecialchars(number_format($contribution['sss_er'], 2)) ?></p>
+                                <p><strong>Pag-ibig:</strong><?= htmlspecialchars(number_format($contribution['pag_ibig_er'], 2)) ?></p>
+                                <p><strong>PhilHealth:</strong><?= htmlspecialchars(number_format($contribution['philhealth_er'], 2)) ?></p>
                             </div>
                         </div>
                     </div>
