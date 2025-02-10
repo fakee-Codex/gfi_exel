@@ -18,7 +18,7 @@
 
 <body>
 
-    <?php include 'aside.php'; ?> <!-- This will import the sidebar -->
+    <?php include 'aside.php'; ?> <!-- This will import the sideba.......................................r -->
 
     <main>
 
