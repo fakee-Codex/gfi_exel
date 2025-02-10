@@ -1,196 +1,119 @@
-<?php include 'database_connection.php'; ?>
+<?php
+session_start();
+require 'database_connection.php';  // Ensure this file properly initializes `$conn`
+
+$error_message = ""; // Initialize an empty error message
+
+// Handle the login request
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+
+    // Check if email and password are not empty
+    if (!empty($email) && !empty($password)) {
+        // Fetch user details from the database
+        $sql = "SELECT password, email FROM users WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+
+            // Verify the password
+            if (password_verify($password, $user['password'])) {
+                // Store user session details
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['email'] = $user['email'];
+
+                // Redirect to dashboard
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                $error_message = "Invalid email or password.";
+            }
+        } else {
+            $error_message = "User not found.";
+        }
+    } else {
+        $error_message = "Please enter email and password.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="table_styles.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>GFI Payroll System</title>
+
+    <!-- Custom fonts and styles -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
 </head>
-<body>
-    <?php include 'sidebars.php'; ?>
-    <div class="content">
-        <h1>GFI File 301 Payroll (September 1-15, 2024)</h1>
-        <button id="addRowBtn">Add Row</button>
-        <button id="saveTableBtn">Save Table</button>
-        <div class="table-wrapper">
-            <table id="crudTable">
-                <thead>
-                    <tr>
-                        <th rowspan="2">Name</th>
-                        <th colspan="2">Full-Time</th>
-                        <th colspan="2">Overloads</th>
-                        <th rowspan="2">Total</th>
-                        <th colspan="3">With Review</th>
-                        <th colspan="3">Adjustment</th>
-                        <th colspan="3">Watch Reward</th>
-                        <th rowspan="2">Gross</th>
-                        <th colspan="3">Absences/Late</th>
-                        <th colspan="2">Loans</th>
-                        <th colspan="5">Contributions</th>
-                        <th rowspan="2">Canteen</th>
-                        <th rowspan="2">Others</th>
-                        <th rowspan="2">Total Deductions</th>
-                        <th rowspan="2">Net Pay</th>
-                        <th rowspan="2">Actions</th>
-                    </tr>
-                    <tr>
-                        <th>Basic</th>
-                        <th>Honorarium</th>
-                        <th>HR</th>
-                        <th>Rate</th>
-                        <th>HR</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                        <th>HR</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                        <th>HR</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                        <th>HR</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                        <th>Pag-ibig</th>
-                        <th>MP2</th>
-                        <th>Med. S</th>
-                        <th>SSS</th>
-                        <th>Ret.</th>
-                        <th>P-ibig</th>
-                        <th>P-Hlth</th>
-                    </tr>
-                </thead>
-                <tbody>
-        
-                    <?php
-                    $sql = "SELECT * FROM computation";
-                    $result = $conn->query($sql);
-                    
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>" . $row["employee_name"] . "</td>";
-                            echo "<td>" . $row["basic_salary"] . "</td>";
-                            echo "<td>" . $row["honorarium"] . "</td>";
-                            echo "<td>" . $row["overload_hr"] . "</td>";
-                            echo "<td>" . $row["overload_rate"] . "</td>";
-                            echo "<td>" . $row["overload_total"] . "</td>";
-                            echo "<td>" . $row["wr_hr"] . "</td>";
-                            echo "<td>" . $row["wr_rate"] . "</td>";
-                            echo "<td>" . $row["wr_total"] . "</td>";
-                            echo "<td>" . $row["adjust_hr"] . "</td>";
-                            echo "<td>" . $row["adjust_rate"] . "</td>";
-                            echo "<td>" . $row["adjust_total"] . "</td>";
-                            echo "<td>" . $row["watch_hr"] . "</td>";
-                            echo "<td>" . $row["watch_rate"] . "</td>";
-                            echo "<td>" . $row["watch_total"] . "</td>";
-                            echo "<td>" . $row["gross_pay"] . "</td>";
-                            echo "<td>" . $row["absent_late_hr"] . "</td>";
-                            echo "<td>" . $row["absent_late_rate"] . "</td>";
-                            echo "<td>" . $row["absent_late_total"] . "</td>";
-                            echo "<td>" . $row["pagibig"] . "</td>";
-                            echo "<td>" . $row["mp2"] . "</td>";
-                            echo "<td>" . $row["med_s"] . "</td>";
-                            echo "<td>" . $row["sss"] . "</td>";
-                            echo "<td>" . $row["retirement"] . "</td>";
-                            echo "<td>" . $row["p_ibig"] . "</td>";
-                            echo "<td>" . $row["philhealth"] . "</td>";
-                            echo "<td>" . $row["canteen"] . "</td>";
-                            echo "<td>" . $row["others"] . "</td>";
-                            echo "<td>" . $row["total_deduction"] . "</td>";
-                            echo "<td>" . $row["net_pay"] . "</td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='26'>No records found</td></tr>";
-                    }
-                    $conn->close();
-                    ?>
-                </tbody>
-            </table>
+
+<body style="background-image: url('img/gfibg.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image">
+                                <br />
+                                <center><img src="img/logo.png" /></center>
+                                <br />
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">PAYROLL SYSTEM</h1>
+                                    </div>
+                                    <form class="user" action="index.php" method="post">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control form-control-user"
+                                                id="email" name="email" placeholder="Email Address" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user"
+                                                id="password" name="password" placeholder="Password" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <label class="custom-control-label" for="customCheck">Remember Me</label>
+                                            </div>
+                                        </div>
+                                        <input class="btn btn-primary btn-user btn-block" type="submit" value="Login">
+                                    </form>
+
+                                    <?php if (!empty($error_message)): ?>
+                                        <hr />
+                                        <div class="alert alert-danger text-center">
+                                            <?php echo $error_message; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <script>
-        document.getElementById('addRowBtn').addEventListener('click', function() {
-            const table = document.getElementById('crudTable').getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow();
-            for (let i = 0; i < 30; i++) {
-                const newCell = newRow.insertCell(i);
-                newCell.contentEditable = 'true';
-                newCell.textContent = '';
-            }
-            const actionsCell = newRow.insertCell(30);
-            actionsCell.innerHTML = '<button>Edit</button>';
-        });
 
-        document.getElementById('saveTableBtn').addEventListener('click', function() {
-            const table = document.getElementById('crudTable').getElementsByTagName('tbody')[0];
-            const rows = table.getElementsByTagName('tr');
-            const data = [];
+    <!-- JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
 
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                if (cells.length < 30) {
-                    console.error(`Row ${i} does not have enough cells.`);
-                    continue;
-                }
-                const rowData = {
-                    employee_name: cells[0].textContent.trim(),
-                    basic_salary: cells[1].textContent.trim(),
-                    honorarium: cells[2].textContent.trim(),
-                    overload_hr: cells[3].textContent.trim(),
-                    overload_rate: cells[4].textContent.trim(),
-                    overload_total: cells[5].textContent.trim(),
-                    wr_hr: cells[6].textContent.trim(),
-                    wr_rate: cells[7].textContent.trim(),
-                    wr_total: cells[8].textContent.trim(),
-                    adjust_hr: cells[9].textContent.trim(),
-                    adjust_rate: cells[10].textContent.trim(),
-                    adjust_total: cells[11].textContent.trim(),
-                    watch_hr: cells[12].textContent.trim(),
-                    watch_rate: cells[13].textContent.trim(),
-                    watch_total: cells[14].textContent.trim(),
-                    gross_pay: cells[15].textContent.trim(),
-                    absent_late_hr: cells[16].textContent.trim(),
-                    absent_late_rate: cells[17].textContent.trim(),
-                    absent_late_total: cells[18].textContent.trim(),
-                    pagibig: cells[19].textContent.trim(),
-                    mp2: cells[20].textContent.trim(),
-                    med_s: cells[21].textContent.trim(),
-                    sss: cells[22].textContent.trim(),
-                    retirement: cells[23].textContent.trim(),
-                    p_ibig: cells[24].textContent.trim(),
-                    philhealth: cells[25].textContent.trim(),
-                    canteen: cells[26].textContent.trim(),
-                    others: cells[27].textContent.trim(),
-                    total_deduction: cells[28].textContent.trim(),
-                    net_pay: cells[29].textContent.trim()
-                };
-                data.push(rowData);
-            }
-
-            console.log('Data to be sent:', data); // Debugging line
-
-            fetch('save_table.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Response from server:', data); // Debugging line
-                    if (data.success) {
-                        alert('Table saved successfully!');
-                    } else {
-                        alert('Failed to save table.');
-                        console.error('Server response:', data); // Debugging line
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred while saving the table.');
-                    console.error('Error:', error);
-                });
-        });
-    </script>
 </body>
 
 </html>
