@@ -172,7 +172,8 @@ $result = $conn->query($sql);
                             <th colspan="2" class="p-2 bg-gray-200">Full-Time</th>
                             <th colspan="2" class="p-2 bg-gray-200">OVERLOADS</th>
                             <th rowspan="2" class="p-2 bg-gray-200">TOTAL</th>
-                            <th colspan="3" class="p-2 bg-gray-200">CLUB</th>
+                            <th colspan="2" class="p-2 bg-gray-200">CLUB</th>
+                            <th rowspan="2" class="p-2 bg-gray-200">TOTAL</th>
                             <th colspan="3" class="p-2 bg-gray-200">ADJUSTMENTS</th>
                             <th colspan="3" class="p-2 bg-gray-200">WATCH REWARD</th>
                             <th rowspan="2" class="p-2 bg-gray-200">GROSS PAY</th>
@@ -191,9 +192,8 @@ $result = $conn->query($sql);
                             <th class="p-2 bg-gray-200">Honorarium</th>
                             <th class="p-2 bg-gray-200">HR</th>
                             <th class="p-2 bg-gray-200">Rate</th>
-                            <th class="p-2 bg-gray-200">HR</th>
+                            <th class="p-2 bg-gray-200">WR</th>
                             <th class="p-2 bg-gray-200">Rate</th>
-                            <th class="p-2 bg-gray-200">Total</th>
                             <th class="p-2 bg-gray-200">HR</th>
                             <th class="p-2 bg-gray-200">Rate</th>
                             <th class="p-2 bg-gray-200">Total</th>
@@ -278,6 +278,7 @@ $result = $conn->query($sql);
                         ?>
                     </tbody>
                 </table>
+                
                 <script>
                     function printData(basicSalary, fullName, honorarium, grossPay, sssTotal, philhealthTotal, pagIbigTotal, medicalSavings, retirement, totalDeduction, netPay) {
                         // Open the print.php page and pass all the data via URL
